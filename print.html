@@ -74,37 +74,69 @@
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      justify-content: space-between;
+      justify-content: flex-start;
       min-width: 0;
     }
 
     .label.size-225x125 {
       width: 2.25in;
       height: 1.25in;
-      padding: 0.06in 0.08in;
+      padding: 0.03in 0.08in 0.05in;
     }
 
     .label.size-1x1 {
       width: 1in;
       height: 1in;
-      padding: 0.04in;
+      padding: 0.02in 0.035in 0.03in;
+    }
+
+    .top-section {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
 
     .barcode-wrap {
       display: flex;
       justify-content: center;
-      align-items: center;
-      flex: 1 1 auto;
-      min-height: 0;
+      align-items: flex-start;
+      flex: 0 0 auto;
+      width: 100%;
     }
 
-    .label.size-225x125 .barcode-wrap svg { max-height: 0.58in; width: 100%; }
-    .label.size-1x1 .barcode-wrap svg { max-height: 0.36in; width: 100%; }
+    .label.size-225x125 .barcode-wrap svg { max-height: 0.5in; width: 100%; }
+    .label.size-1x1 .barcode-wrap svg { max-height: 0.24in; width: 100%; }
+
+    .sku {
+      text-align: center;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .label.size-225x125 .sku {
+      font-size: 6.5pt;
+      margin-top: 1px;
+    }
+
+    .label.size-1x1 .sku {
+      font-size: 3.75pt;
+      margin-top: 0.5px;
+    }
 
     .text-block {
       min-width: 0;
       width: 100%;
       flex: 0 0 auto;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .label.size-1x1 .text-block {
+      padding-top: 2px;
     }
 
     .item-name {
@@ -125,44 +157,59 @@
     .label.size-225x125 .item-name {
       font-size: 8pt;
       max-height: 0.24in;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
     .label.size-1x1 .item-name {
       font-size: 4.5pt;
-      max-height: 0.17in;
+      max-height: 0.15in;
       margin-top: 0;
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 4px;
       line-height: 1.05;
-      min-width: 0;
-      width: 100%;
-      overflow: hidden;
     }
 
-    .label.size-225x125 .meta { font-size: 8pt; margin-top: 1px; }
-    .label.size-1x1 .meta { font-size: 5pt; margin-top: 0; }
+    .label.size-1x1 .item-name.one-line {
+      -webkit-line-clamp: 1;
+      max-height: 0.08in;
+      white-space: nowrap;
+      display: block;
+      text-overflow: ellipsis;
+    }
 
-    .meta .variation {
+    .variation {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      flex: 1 1 auto;
       min-width: 0;
+      width: 100%;
+      line-height: 1.05;
     }
 
-    .meta .price {
-      flex: 0 0 auto;
+    .label.size-225x125 .variation {
+      font-size: 7.5pt;
+      margin-top: 1px;
+    }
+
+    .label.size-1x1 .variation {
+      font-size: 4.25pt;
+      margin-top: 2px;
+    }
+
+    .price {
       font-weight: 700;
       white-space: nowrap;
+      align-self: flex-end;
+      line-height: 1;
     }
 
-    .label.size-225x125 .meta .price { font-size: 10.5pt; }
-    .label.size-1x1 .meta .price { font-size: 6.5pt; }
+    .label.size-225x125 .price {
+      font-size: 10.5pt;
+      margin-top: 3px;
+    }
+
+    .label.size-1x1 .price {
+      font-size: 6pt;
+      margin-top: 5px;
+    }
 
     .error {
       max-width: 560px;
@@ -250,31 +297,43 @@
         .replace(/"/g, "&quot;");
     }
 
-    function itemNameFontSize(itemName, labelSize) {
+    function itemNameStyle(itemName, labelSize) {
       const len = String(itemName).length;
       if (labelSize === "1x1") {
-        if (len > 42) return "3.5pt";
-        if (len > 30) return "4pt";
-        if (len > 20) return "4.5pt";
-        return "5pt";
+        let fontSize = "5pt";
+        let oneLine = false;
+        if (len > 38) {
+          fontSize = "3.25pt";
+          oneLine = true;
+        } else if (len > 28) {
+          fontSize = "3.75pt";
+          oneLine = true;
+        } else if (len > 18) {
+          fontSize = "4.25pt";
+        }
+        return { fontSize, oneLine };
       }
-      if (len > 52) return "5.5pt";
-      if (len > 36) return "6.5pt";
-      if (len > 24) return "7.5pt";
-      return "8pt";
+
+      let fontSize = "8pt";
+      if (len > 52) fontSize = "5.5pt";
+      else if (len > 36) fontSize = "6.5pt";
+      else if (len > 24) fontSize = "7.5pt";
+      return { fontSize, oneLine: false };
     }
 
-    function createLabelMarkup(index, labelSize, itemName, itemVariation, itemPrice) {
-      const nameSize = itemNameFontSize(itemName, labelSize);
+    function createLabelMarkup(index, labelSize, itemName, itemVariation, itemPrice, itemSku) {
+      const nameStyle = itemNameStyle(itemName, labelSize);
+      const nameClass = nameStyle.oneLine ? "item-name one-line" : "item-name";
       return `
         <div class="label size-${labelSize}">
-          <div class="barcode-wrap"><svg id="barcode-${index}"></svg></div>
+          <div class="top-section">
+            <div class="barcode-wrap"><svg id="barcode-${index}"></svg></div>
+            <div class="sku">${escapeHtml(itemSku)}</div>
+          </div>
           <div class="text-block">
-            <div class="item-name" style="font-size:${nameSize}">${escapeHtml(itemName)}</div>
-            <div class="meta">
-              <span class="variation">${escapeHtml(itemVariation)}</span>
-              <span class="price">${escapeHtml(formatPrice(itemPrice))}</span>
-            </div>
+            <div class="${nameClass}" style="font-size:${nameStyle.fontSize}">${escapeHtml(itemName)}</div>
+            <div class="variation">${escapeHtml(itemVariation)}</div>
+            <div class="price">${escapeHtml(formatPrice(itemPrice))}</div>
           </div>
         </div>
       `;
@@ -295,12 +354,12 @@
       const qty = parseQuantity(qtyInput.value);
       qtyInput.value = String(qty);
 
-      const barcodeHeight = size === "1x1" ? 28 : 44;
-      const barcodeWidth = size === "1x1" ? 1.1 : 1.4;
+      const barcodeHeight = size === "1x1" ? 18 : 38;
+      const barcodeWidth = size === "1x1" ? 1 : 1.4;
 
       let markup = "";
       for (let i = 0; i < qty; i += 1) {
-        markup += createLabelMarkup(i, size, name, variation, price);
+        markup += createLabelMarkup(i, size, name, variation, price, sku);
       }
       labelsEl.innerHTML = markup;
 
