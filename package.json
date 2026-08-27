@@ -1,0 +1,11 @@
+{
+  "name": "shawnee-barcode-print",
+  "private": true,
+  "version": "1.0.0",
+  "description": "DYMO barcode label print preview for Shawnee Merchandise Airtable catalog",
+  "scripts": {
+    "start": "python3 -m http.server 3456 --bind 127.0.0.1",
+    "deploy": "vercel deploy --prod",
+    "test-url": "open 'http://127.0.0.1:3456/print.html?sku=15689&name=Slide%20Neckerchief&variation=Regular&price=5&size=225x125&qty=5'"
+  }
+}
