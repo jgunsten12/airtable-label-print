@@ -169,7 +169,7 @@ function buildStandalonePrintPage() {
       overflow: hidden;
     }
     .meta .variation { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
-    .meta .price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
+    .meta .price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; font-size: ${labelSize === "1x1" ? "6.5pt" : "10.5pt"}; }
     @media print {
       @page { margin: 0; size: ${labelSize === "1x1" ? "1in 1in" : "2.25in 1.25in"}; }
       body { margin: 0; }

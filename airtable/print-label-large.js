@@ -116,7 +116,7 @@ const html = `<!DOCTYPE html>
     .item-name { font-weight: 700; line-height: 1.08; min-width: 0; width: 100%; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-height: 0.24in; }
     .meta { display: flex; justify-content: space-between; gap: 4px; line-height: 1.05; font-size: 8pt; min-width: 0; width: 100%; overflow: hidden; }
     .meta .variation { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
-    .meta .price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
+    .meta .price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; font-size: 10.5pt; }
     @media print { @page { margin: 0; size: 2.25in 1.25in; } body { margin: 0; } }
   </style>
 </head>
