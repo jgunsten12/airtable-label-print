@@ -75,6 +75,7 @@
       flex-direction: column;
       align-items: stretch;
       justify-content: space-between;
+      min-width: 0;
     }
 
     .label.size-225x125 {
@@ -97,26 +98,49 @@
       min-height: 0;
     }
 
-    .label.size-225x125 .barcode-wrap svg { max-height: 0.62in; width: 100%; }
-    .label.size-1x1 .barcode-wrap svg { max-height: 0.42in; width: 100%; }
+    .label.size-225x125 .barcode-wrap svg { max-height: 0.58in; width: 100%; }
+    .label.size-1x1 .barcode-wrap svg { max-height: 0.36in; width: 100%; }
+
+    .text-block {
+      min-width: 0;
+      width: 100%;
+      flex: 0 0 auto;
+    }
 
     .item-name {
       font-weight: 700;
-      line-height: 1.05;
-      white-space: nowrap;
+      line-height: 1.08;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
       overflow: hidden;
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
-    .label.size-225x125 .item-name { font-size: 9pt; margin-top: 1px; }
-    .label.size-1x1 .item-name { font-size: 5.5pt; margin-top: 0; }
+    .label.size-225x125 .item-name {
+      font-size: 8pt;
+      max-height: 0.24in;
+      margin-top: 1px;
+    }
+
+    .label.size-1x1 .item-name {
+      font-size: 4.5pt;
+      max-height: 0.17in;
+      margin-top: 0;
+    }
 
     .meta {
       display: flex;
       justify-content: space-between;
       gap: 4px;
       line-height: 1.05;
-      white-space: nowrap;
+      min-width: 0;
+      width: 100%;
       overflow: hidden;
     }
 
@@ -126,12 +150,15 @@
     .meta .variation {
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
       flex: 1 1 auto;
+      min-width: 0;
     }
 
     .meta .price {
       flex: 0 0 auto;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .error {
@@ -220,14 +247,31 @@
         .replace(/"/g, "&quot;");
     }
 
+    function itemNameFontSize(itemName, labelSize) {
+      const len = String(itemName).length;
+      if (labelSize === "1x1") {
+        if (len > 42) return "3.5pt";
+        if (len > 30) return "4pt";
+        if (len > 20) return "4.5pt";
+        return "5pt";
+      }
+      if (len > 52) return "5.5pt";
+      if (len > 36) return "6.5pt";
+      if (len > 24) return "7.5pt";
+      return "8pt";
+    }
+
     function createLabelMarkup(index, labelSize, itemName, itemVariation, itemPrice) {
+      const nameSize = itemNameFontSize(itemName, labelSize);
       return `
         <div class="label size-${labelSize}">
           <div class="barcode-wrap"><svg id="barcode-${index}"></svg></div>
-          <div class="item-name">${escapeHtml(itemName)}</div>
-          <div class="meta">
-            <span class="variation">${escapeHtml(itemVariation)}</span>
-            <span class="price">${escapeHtml(formatPrice(itemPrice))}</span>
+          <div class="text-block">
+            <div class="item-name" style="font-size:${nameSize}">${escapeHtml(itemName)}</div>
+            <div class="meta">
+              <span class="variation">${escapeHtml(itemVariation)}</span>
+              <span class="price">${escapeHtml(formatPrice(itemPrice))}</span>
+            </div>
           </div>
         </div>
       `;

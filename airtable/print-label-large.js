@@ -50,18 +50,29 @@ function formatPrice(value) {
   }).format(num);
 }
 
+function itemNameFontSize(itemName) {
+  const len = String(itemName).length;
+  if (len > 52) return "5.5pt";
+  if (len > 36) return "6.5pt";
+  if (len > 24) return "7.5pt";
+  return "8pt";
+}
+
 function buildLabelHtml(index) {
   const safeName = escapeHtml(name);
   const safeVariation = escapeHtml(variation);
   const safePrice = escapeHtml(formatPrice(price));
+  const nameSize = itemNameFontSize(name);
 
   return `
   <div class="label">
     <div class="barcode-wrap"><svg id="barcode-${index}"></svg></div>
-    <div class="item-name">${safeName}</div>
-    <div class="meta">
-      <span class="variation">${safeVariation}</span>
-      <span class="price">${safePrice}</span>
+    <div class="text-block">
+      <div class="item-name" style="font-size:${nameSize}">${safeName}</div>
+      <div class="meta">
+        <span class="variation">${safeVariation}</span>
+        <span class="price">${safePrice}</span>
+      </div>
     </div>
   </div>`;
 }
@@ -100,11 +111,12 @@ const html = `<!DOCTYPE html>
     }
     .label:last-child { page-break-after: auto; break-after: auto; }
     .barcode-wrap { display: flex; justify-content: center; align-items: center; flex: 1 1 auto; min-height: 0; }
-    .barcode-wrap svg { width: 100%; max-height: 0.62in; }
-    .item-name { font-weight: 700; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 9pt; }
-    .meta { display: flex; justify-content: space-between; gap: 4px; line-height: 1.05; font-size: 8pt; white-space: nowrap; overflow: hidden; }
-    .meta .variation { overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; }
-    .meta .price { flex: 0 0 auto; font-weight: 700; }
+    .barcode-wrap svg { width: 100%; max-height: 0.58in; }
+    .text-block { min-width: 0; width: 100%; flex: 0 0 auto; }
+    .item-name { font-weight: 700; line-height: 1.08; min-width: 0; width: 100%; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-height: 0.24in; }
+    .meta { display: flex; justify-content: space-between; gap: 4px; line-height: 1.05; font-size: 8pt; min-width: 0; width: 100%; overflow: hidden; }
+    .meta .variation { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
+    .meta .price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
     @media print { @page { margin: 0; size: 2.25in 1.25in; } body { margin: 0; } }
   </style>
 </head>

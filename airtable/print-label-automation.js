@@ -70,18 +70,35 @@ function buildHostedPrintUrl() {
   return `${printBaseUrl}/print.html?${query.toString()}`;
 }
 
+function itemNameFontSize(itemName, size) {
+  const len = String(itemName).length;
+  if (size === "1x1") {
+    if (len > 42) return "3.5pt";
+    if (len > 30) return "4pt";
+    if (len > 20) return "4.5pt";
+    return "5pt";
+  }
+  if (len > 52) return "5.5pt";
+  if (len > 36) return "6.5pt";
+  if (len > 24) return "7.5pt";
+  return "8pt";
+}
+
 function buildLabelHtml(index) {
   const safeName = escapeHtml(name);
   const safeVariation = escapeHtml(variation);
   const safePrice = escapeHtml(formatPrice(price));
+  const nameSize = itemNameFontSize(name, labelSize);
 
   return `
   <div class="label">
     <div class="barcode-wrap"><svg id="barcode-${index}"></svg></div>
-    <div class="item-name">${safeName}</div>
-    <div class="meta">
-      <span class="variation">${safeVariation}</span>
-      <span class="price">${safePrice}</span>
+    <div class="text-block">
+      <div class="item-name" style="font-size:${nameSize}">${safeName}</div>
+      <div class="meta">
+        <span class="variation">${safeVariation}</span>
+        <span class="price">${safePrice}</span>
+      </div>
     </div>
   </div>`;
 }
@@ -124,14 +141,22 @@ function buildStandalonePrintPage() {
       break-after: auto;
     }
     .barcode-wrap { display: flex; justify-content: center; align-items: center; flex: 1 1 auto; min-height: 0; }
-    .barcode-wrap svg { width: 100%; max-height: ${labelSize === "1x1" ? "0.42in" : "0.62in"}; }
+    .barcode-wrap svg { width: 100%; max-height: ${labelSize === "1x1" ? "0.36in" : "0.58in"}; }
+    .text-block { min-width: 0; width: 100%; flex: 0 0 auto; }
     .item-name {
       font-weight: 700;
-      line-height: 1.05;
-      white-space: nowrap;
+      line-height: 1.08;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
       overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: ${labelSize === "1x1" ? "5.5pt" : "9pt"};
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-height: ${labelSize === "1x1" ? "0.17in" : "0.24in"};
     }
     .meta {
       display: flex;
@@ -139,11 +164,12 @@ function buildStandalonePrintPage() {
       gap: 4px;
       line-height: 1.05;
       font-size: ${labelSize === "1x1" ? "5pt" : "8pt"};
-      white-space: nowrap;
+      min-width: 0;
+      width: 100%;
       overflow: hidden;
     }
-    .meta .variation { overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; }
-    .meta .price { flex: 0 0 auto; font-weight: 700; }
+    .meta .variation { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
+    .meta .price { flex: 0 0 auto; font-weight: 700; white-space: nowrap; }
     @media print {
       @page { margin: 0; size: ${labelSize === "1x1" ? "1in 1in" : "2.25in 1.25in"}; }
       body { margin: 0; }
