@@ -162,17 +162,13 @@
 
     .label.size-1x1 .item-name {
       font-size: 5.5pt;
-      max-height: 0.17in;
       margin-top: 0;
-      line-height: 1.05;
-    }
-
-    .label.size-1x1 .item-name.one-line {
-      -webkit-line-clamp: 1;
-      max-height: 0.1in;
-      white-space: nowrap;
-      display: block;
-      text-overflow: ellipsis;
+      line-height: 1.1;
+      max-height: calc(2 * 1.1em);
+      -webkit-line-clamp: 2;
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: normal;
     }
 
     .variation {
@@ -297,33 +293,23 @@
         .replace(/"/g, "&quot;");
     }
 
-    function itemNameStyle(itemName, labelSize) {
+    function itemNameFontSize(itemName, labelSize) {
       const len = String(itemName).length;
       if (labelSize === "1x1") {
-        let fontSize = "6pt";
-        let oneLine = false;
-        if (len > 38) {
-          fontSize = "4.75pt";
-          oneLine = true;
-        } else if (len > 28) {
-          fontSize = "5.25pt";
-          oneLine = true;
-        } else if (len > 18) {
-          fontSize = "5.75pt";
-        }
-        return { fontSize, oneLine };
+        if (len > 38) return "4.75pt";
+        if (len > 28) return "5.25pt";
+        if (len > 18) return "5.75pt";
+        return "6pt";
       }
 
-      let fontSize = "8pt";
-      if (len > 52) fontSize = "5.5pt";
-      else if (len > 36) fontSize = "6.5pt";
-      else if (len > 24) fontSize = "7.5pt";
-      return { fontSize, oneLine: false };
+      if (len > 52) return "5.5pt";
+      if (len > 36) return "6.5pt";
+      if (len > 24) return "7.5pt";
+      return "8pt";
     }
 
     function createLabelMarkup(index, labelSize, itemName, itemVariation, itemPrice, itemSku) {
-      const nameStyle = itemNameStyle(itemName, labelSize);
-      const nameClass = nameStyle.oneLine ? "item-name one-line" : "item-name";
+      const nameSize = itemNameFontSize(itemName, labelSize);
       return `
         <div class="label size-${labelSize}">
           <div class="top-section">
@@ -331,7 +317,7 @@
             <div class="sku">${escapeHtml(itemSku)}</div>
           </div>
           <div class="text-block">
-            <div class="${nameClass}" style="font-size:${nameStyle.fontSize}">${escapeHtml(itemName)}</div>
+            <div class="item-name" style="font-size:${nameSize}">${escapeHtml(itemName)}</div>
             <div class="variation">${escapeHtml(itemVariation)}</div>
             <div class="price">${escapeHtml(formatPrice(itemPrice))}</div>
           </div>
