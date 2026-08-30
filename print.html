@@ -81,13 +81,13 @@
     .label.size-225x125 {
       width: 2.25in;
       height: 1.25in;
-      padding: 0.03in 0.08in 0.05in;
+      padding: 0.06in 0.08in 0.06in;
     }
 
     .label.size-1x1 {
       width: 1in;
       height: 1in;
-      padding: 0.02in 0.035in 0.03in;
+      padding: 0.045in 0.04in 0.045in;
     }
 
     .top-section {
@@ -106,8 +106,8 @@
       width: 100%;
     }
 
-    .label.size-225x125 .barcode-wrap svg { max-height: 0.5in; width: 100%; }
-    .label.size-1x1 .barcode-wrap svg { max-height: 0.22in; width: 100%; }
+    .label.size-225x125 .barcode-wrap svg { max-height: 0.46in; width: 100%; }
+    .label.size-1x1 .barcode-wrap svg { max-height: 0.19in; width: 100%; }
 
     .sku {
       text-align: center;
@@ -354,7 +354,7 @@
       const qty = parseQuantity(qtyInput.value);
       qtyInput.value = String(qty);
 
-      const barcodeHeight = size === "1x1" ? 16 : 38;
+      const barcodeHeight = size === "1x1" ? 15 : 36;
       const barcodeWidth = size === "1x1" ? 1 : 1.4;
 
       let markup = "";
