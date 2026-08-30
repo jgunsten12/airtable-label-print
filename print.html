@@ -107,7 +107,7 @@
     }
 
     .label.size-225x125 .barcode-wrap svg { max-height: 0.5in; width: 100%; }
-    .label.size-1x1 .barcode-wrap svg { max-height: 0.24in; width: 100%; }
+    .label.size-1x1 .barcode-wrap svg { max-height: 0.22in; width: 100%; }
 
     .sku {
       text-align: center;
@@ -161,15 +161,15 @@
     }
 
     .label.size-1x1 .item-name {
-      font-size: 4.5pt;
-      max-height: 0.15in;
+      font-size: 5.5pt;
+      max-height: 0.17in;
       margin-top: 0;
       line-height: 1.05;
     }
 
     .label.size-1x1 .item-name.one-line {
       -webkit-line-clamp: 1;
-      max-height: 0.08in;
+      max-height: 0.1in;
       white-space: nowrap;
       display: block;
       text-overflow: ellipsis;
@@ -190,7 +190,7 @@
     }
 
     .label.size-1x1 .variation {
-      font-size: 4.25pt;
+      font-size: 5.5pt;
       margin-top: 2px;
     }
 
@@ -207,8 +207,8 @@
     }
 
     .label.size-1x1 .price {
-      font-size: 6pt;
-      margin-top: 5px;
+      font-size: 7.5pt;
+      margin-top: 4px;
     }
 
     .error {
@@ -300,16 +300,16 @@
     function itemNameStyle(itemName, labelSize) {
       const len = String(itemName).length;
       if (labelSize === "1x1") {
-        let fontSize = "5pt";
+        let fontSize = "6pt";
         let oneLine = false;
         if (len > 38) {
-          fontSize = "3.25pt";
+          fontSize = "4.75pt";
           oneLine = true;
         } else if (len > 28) {
-          fontSize = "3.75pt";
+          fontSize = "5.25pt";
           oneLine = true;
         } else if (len > 18) {
-          fontSize = "4.25pt";
+          fontSize = "5.75pt";
         }
         return { fontSize, oneLine };
       }
@@ -354,7 +354,7 @@
       const qty = parseQuantity(qtyInput.value);
       qtyInput.value = String(qty);
 
-      const barcodeHeight = size === "1x1" ? 18 : 38;
+      const barcodeHeight = size === "1x1" ? 16 : 38;
       const barcodeWidth = size === "1x1" ? 1 : 1.4;
 
       let markup = "";
